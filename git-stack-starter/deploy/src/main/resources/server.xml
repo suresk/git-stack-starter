@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='utf-8'?>
+	<!--
+		Note: A "Server" is not itself a "Container", so you may not define
+		subcomponents such as "Valves" at this level. Documentation at
+		/docs/config/server.html
+	-->
+<Server port="${shutdown.port}" shutdown="SHUTDOWN">
+
+	<!--
+		Initialize Jasper prior to webapps are loaded. Documentation at
+		/docs/jasper-howto.html
+	-->
+	<Listener className="org.apache.catalina.core.JasperListener" />
+
+	<Listener className="org.apache.catalina.mbeans.ServerLifecycleListener" />
+	<Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener" />
+
+	<!--
+		Global JNDI resources Documentation at /docs/jndi-resources-howto.html
+	-->
+	<GlobalNamingResources>
+		<Resource auth="Container"
+			  connectionFactoryClassName="oracle.jdbc.pool.OracleDataSource"
+			  maxPoolSize="${ds.maxPoolSize}"
+			  maxStatements="${ds.maxStatements}"
+			  validateConnectionOnBorrow="true"
+			  factory="oracle.ucp.jdbc.PoolDataSourceImpl"
+			  name="jdbc/default/DataSource"
+			  dataSourceName="git-stack-starter"
+			  password="${ds.password}"
+			  type="oracle.ucp.jdbc.PoolDataSource"
+			  url="${ds.url}"
+			  user="${ds.username}"
+			  connectionProperties="{oracle.jdbc.ReadTimeout=120000, includeSynonyms=true}"
+			  connectionWaitTimeout="180"
+			  inactiveConnectionTimeout="1800"/>
+	</GlobalNamingResources>
+
+	<!--
+		A "Service" is a collection of one or more "Connectors" that share a
+		single "Container" Note: A "Service" is not itself a "Container", so
+		you may not define subcomponents such as "Valves" at this level.
+		Documentation at /docs/config/service.html
+	-->
+	<Service name="Catalina">
+
+		<!--
+			The connectors can use a shared executor, you can define one or more
+			named thread pools
+		
+		<Executor name="tomcatThreadPool" namePrefix="catalina-exec-"
+			maxThreads="${tomcatThreadPool.maxThreads}" minSpareThreads="4" />-->
+
+
+		<!--
+			A "Connector" represents an endpoint by which requests are received
+			and responses are returned. Documentation at : Java HTTP Connector:
+			/docs/config/http.html (blocking & non-blocking) Java AJP Connector:
+			/docs/config/ajp.html APR (HTTP/AJP) Connector: /docs/apr.html Define
+			a non-SSL HTTP/1.1 Connector on port ${http.port}
+		-->
+	    <Connector port="${http.port}" protocol="HTTP/1.1" 
+              connectionTimeout="20000" 
+              maxThreads="${tomcatThreadPool.maxThreads}"/>
+		<!-- A "Connector" using the shared thread pool
+		<Connector executor="tomcatThreadPool" port="${http.port}"
+			protocol="HTTP/1.1" connectionTimeout="20000" redirectPort="${http.port}" />-->
+
+		<!--
+			An Engine represents the entry point (within Catalina) that processes
+			every request. The Engine implementation for Tomcat stand alone
+			analyzes the HTTP headers included with the request, and passes them
+			on to the appropriate Host (virtual host). Documentation at
+			/docs/config/engine.html
+		-->
+		<Engine name="Catalina" defaultHost="localhost">
+
+			<!--
+				The request dumper valve dumps useful debugging information about
+				the request and response data received and sent by Tomcat.
+				Documentation at: /docs/config/valve.html
+			-->
+			<!--
+				<Valve className="org.apache.catalina.valves.RequestDumperValve"/>
+			-->
+
+			<!--
+				Define the default virtual host Note: XML Schema validation will not
+				work with Xerces 2.2.
+			-->
+			<Host name="localhost" appBase="webapps" unpackWARs="false"
+				autoDeploy="false" deployOnStartup="true" xmlValidation="false"
+				xmlNamespaceAware="false" deployXML="true">
+
+				<!--
+					Access log processes all example. Documentation at:
+					/docs/config/valve.html
+				-->
+				<Valve className="org.apache.catalina.valves.AccessLogValve"
+					directory="logs" prefix="localhost_access_log." suffix=".log"
+					pattern="common" resolveHosts="false" />
+					
+				<!--
+					RemoteIPValve for running behind a proxy.
+				-->
+				<Valve className="org.apache.catalina.valves.RemoteIpValve"
+					protocolHeader="X-Forwarded-Scheme"/>
+			</Host>
+		</Engine>
+	</Service>
+</Server>

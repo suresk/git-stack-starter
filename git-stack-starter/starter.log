@@ -1,0 +1,66 @@
+### Log for Stack Starter Project
+project.type=Web Application
+
+qaIntegration=true
+#Enabled: true, Saved Value: null, Default Value: true
+
+createWebServiceExamples=false
+#Enabled: false, Saved Value: true, Default Value: false
+
+webServiceType=Manual Configuration
+#Enabled: false, Saved Value: REST, Default Value: Manual Configuration
+
+useDatabase=true
+#Enabled: true, Saved Value: null, Default Value: true
+
+useJPA=false
+#Enabled: true, Saved Value: null, Default Value: false
+
+database=oracle
+#Enabled: true, Saved Value: null, Default Value: oracle
+
+databaseUrl=jdbc:oracle:thin:@192.168.56.101:1521:xe
+#Enabled: true, Saved Value: null, Default Value: jdbc:oracle:thin:@192.168.56.101:1521:xe
+
+databaseUser=oracle
+#Enabled: true, Saved Value: null, Default Value: oracle
+
+databasePassword=(hidden)
+#Enabled: true, Saved Value: (hidden), Default Value: oracle
+
+dbtoolEnabled=true
+#Enabled: true, Saved Value: null, Default Value: true
+
+useSpring=true
+#Enabled: true, Saved Value: null, Default Value: true
+
+useLdsAccount=true
+#Enabled: true, Saved Value: null, Default Value: true
+
+ldsAccountUsage=WAM
+#Enabled: true, Saved Value: null, Default Value: WAM
+
+securityConnectionDN=cn=(YOUR_APP),ou=apps,o=lds
+#Enabled: false, Saved Value: null, Default Value: cn=(YOUR_APP),ou=apps,o=lds
+
+securityConnectionPasssword=(hidden)
+#Enabled: false, Saved Value: (hidden), Default Value: 
+
+deployEnv=Tomcat
+#Enabled: true, Saved Value: null, Default Value: Tomcat
+
+devEnv=Community (Public)
+#Enabled: true, Saved Value: null, Default Value: Community (Public)
+
+viewTechnology=Spring MVC
+#Enabled: true, Saved Value: null, Default Value: Spring MVC
+
+examples=true
+#Enabled: true, Saved Value: null, Default Value: true
+
+pseudoi18n=false
+#Enabled: true, Saved Value: null, Default Value: false
+
+version=1.0
+#Enabled: true, Saved Value: null, Default Value: 1.0
+

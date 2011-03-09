@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- =========================================================== -->
+<!-- Test ApplicationContext File   							 -->
+<!-- =========================================================== -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:stack-db="http://code.lds.org/schema/spring/db"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       					   http://code.lds.org/schema/spring/db http://code.lds.org/schema/spring/db/stack-db-3.0.xsd"
+       default-lazy-init="true">
+		<stack-db:data-source url="jdbc:oracle:thin:@192.168.56.101:1521:xe"
+							  user="oracle"
+							  password="oracle"
+							  override="true"
+							  db-env="EMBEDDED"/>
+</beans>

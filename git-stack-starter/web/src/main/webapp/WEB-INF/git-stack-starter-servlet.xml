@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:stack-web="http://code.lds.org/schema/spring/web"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+						http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+						http://code.lds.org/schema/spring/web http://code.lds.org/schema/spring/web/stack-web-3.0.xsd"
+	default-lazy-init="true">
+
+	<!--
+		- The controllers are auto detected POJOs labeled with the @Controller annotation.
+	-->
+	<context:component-scan base-package="org.lds" use-default-filters="false">
+		<context:include-filter expression="org.springframework.stereotype.Controller" type="annotation" />
+	</context:component-scan>
+
+	<mvc:annotation-driven validator="validator" />
+	
+	<stack-web:locale-resolver />
+
+	<mvc:interceptors>
+		<bean id="flashScopeInterceptor" class="org.lds.stack.web.spring.mvc.flash.FlashScopeInterceptor" />
+		<bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />
+	</mvc:interceptors>
+	
+	<!-- Allows for mapping the DispatcherServlet to "/" by forwarding static resource requests to the container's default Servlet -->
+	<mvc:default-servlet-handler />
+	
+	<mvc:view-controller path="/" view-name="index" />
+	
+	<mvc:view-controller path="/errors/generalError" view-name="errors/generalError"/>
+	<mvc:view-controller path="/errors/resourceNotFound" view-name="errors/resourceNotFound"/>
+	<mvc:view-controller path="/errors/dataAccessFailure" view-name="errors/dataAccessFailure"/>
+	
+	<!-- Resolves view names to protected .jsp resources within the /WEB-INF/views directory -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/views/"/>
+		<property name="suffix" value=".jsp"/>
+		<property name="redirectHttp10Compatible" value="false"/>
+	</bean>
+
+	<!-- Application Message Bundle -->
+	<bean id="messageSource" class="org.lds.stack.web.spring.i18n.EnumeratableMessageSourceImpl">
+		<property name="basenames">
+			<list>
+				<value>classpath:messages</value>
+			</list>
+		</property>
+	</bean>
+
+	
+
+	<!--
+		Resolves specific types of exceptions to corresponding logical view names for error views. 
+		The default behaviour of DispatcherServlet is to propagate all exceptions to the servlet 
+		container: this will happen here with all other types of exceptions.
+	-->
+	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<prop key=".DataAccessException">errors/dataAccessFailure</prop>
+				<prop key=".AccessDeniedException">errors/dataAccessFailure</prop>
+				<prop key=".TypeMismatchException">errors/resourceNotFound</prop>
+				<prop key=".NoSuchRequestHandlingMethodException">errors/resourceNotFound</prop>
+				<prop key=".MissingServletRequestParameterException">errors/resourceNotFound</prop>
+			</props>
+		</property>
+		<property name="defaultErrorView" value="errors/generalError"/>
+		<property name="warnLogCategory" value="org.lds.stack.petstore"/>
+	</bean>
+	
+	<context:mbean-export default-domain="org.lds.git-stack-starter"/>
+	
+	<bean id="mvcContextMBean" class="org.lds.stack.system.spring.SpringContextMBean" lazy-init="false"/>
+</beans>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>org.lds.stack</groupId>
+    <artifactId>stack-master</artifactId>
+    <version>3.1</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>git-stack-starter</artifactId>
+  <packaging>pom</packaging>
+  <name>${project.artifactId}</name>
+  <groupId>org.lds</groupId>
+  <version>1.0</version>
+  <properties>
+    <projectName>git-stack-starter</projectName>
+    <contextRoot>/git-stack-starter</contextRoot>
+    <tomcatCheckUrl>http://${tomcatHost}:8180${contextRoot}/canary</tomcatCheckUrl>
+    <wamUrl>http://${tomcatHost}:8080${contextRoot}</wamUrl>
+    <tomcatSkip>${skipDeploy}</tomcatSkip>
+    <tomcatHost>${deployHost}</tomcatHost>
+    <tomcatUser>${deployUser}</tomcatUser>
+    <wamSkip>${skipDeploy}</wamSkip>
+    <wamHost>${deployHost}</wamHost>
+    <wamUser>${deployUser}</wamUser>
+  </properties>
+  <modules>
+    <module>db</module>
+    <module>web</module>
+    <module>deploy</module>
+    <module>wam</module>
+    <module>qa</module>
+  </modules>
+  <repositories>
+    <repository>
+      <id>lds-main</id>
+      <name>LDS Main Repo</name>
+      <url>http://code.lds.org/nexus/content/groups/main-repo</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+  <pluginRepositories />
+  <prerequisites>
+    <maven>${mavenVersion}</maven>
+  </prerequisites>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.lds.stack.wam</groupId>
+          <artifactId>stack-wam-maven-plugin</artifactId>
+          <configuration>
+            <configLocation>classpath:wam-config.xml</configLocation>
+            <systemPropertiesVariables>
+              <wamHost>${wamHost}</wamHost>
+              <appHost>${tomcatHost}</appHost>
+            </systemPropertiesVariables>
+          </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>${projectName}-wam</artifactId>
+              <version>${project.version}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+  <distributionManagement>
+    <repository>
+      <id>lds-nexus</id>
+      <name>Stack Staging Repo</name>
+      <url>https://code.lds.org/nexus/content/repositories/releases</url>
+    </repository>
+    <snapshotRepository>
+      <id>lds-nexus</id>
+      <name>Snapshot Repo</name>
+      <url>https://code.lds.org/nexus/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <site>
+      <id>lds-repo</id>
+      <name>LDS Maven2 Site Reports</name>
+      <url>scp://ocweb//opt/LDSDev/html/maven-sites/git-stack-starter/${project.version}</url>
+    </site>
+  </distributionManagement>
+  <ciManagement>
+    <system>cruisecontrol</system>
+    <url>{put ci url here}</url>
+  </ciManagement>
+  <scm>
+    <url>{put subversion url here}</url>
+  </scm>
+  <issueManagement>
+    <system>JIRA</system>
+    <url>https://tech.lds.org/jira/browse/{project}</url>
+  </issueManagement>
+  <profiles>
+    <profile>
+      <id>local</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <skipEmbeddedDeploy>false</skipEmbeddedDeploy>
+        <skipDeploy>true</skipDeploy>
+        <deployHost>localhost</deployHost>
+        <deployUser></deployUser>
+        <tomcatEnv>dev</tomcatEnv>
+      </properties>
+    </profile>
+    <profile>
+      <id>continuous</id>
+      <properties>
+        <itGroups>smoke</itGroups>
+        <skipDeploy>false</skipDeploy>
+        <skipEmbeddedDeploy>true</skipEmbeddedDeploy>
+        <deployUser>{continuous server user}</deployUser>
+        <deployHost>{Continuous Server IP}</deployHost>
+        <testEnv>default</testEnv>
+        <tomcatEnv>continuous</tomcatEnv>
+        <tomcatRemoteDir>{Continuous Server Tomcat Deploy Dir}</tomcatRemoteDir>
+        <tomcatJavaHome>{Optional Continuous Server Java Home Dir}</tomcatJavaHome>
+        <wamDeployDir>{Dir to deploy WAM on Server}</wamDeployDir>
+        <wamJavaHome>{Optional Java Home directory on WAM Server}</wamJavaHome>
+      </properties>
+    </profile>
+  </profiles>
+</project>

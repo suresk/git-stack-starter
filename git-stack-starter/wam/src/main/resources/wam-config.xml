@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?system-alias wam-host="wamHost" default="localhost"?>
+<?system-alias app-host="appHost" default="localhost"?>
+<?system-alias wam-proxy-port="wamProxyPort" default="8080"?>
+<?system-alias wam-console-port="wamConsolePort" default="8081"?>
+<?system-alias app-port="appPort" default="8180"?>
+<config proxy-port="{{wam-proxy-port}}" console-port="{{wam-console-port}}"	allow-non-sso-traffic="false"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://code.lds.org/schema/wamulator"
+	xsi:schemaLocation="http://code.lds.org/schema/wamulator http://code.lds.org/schema/wamulator/wamulator-5.0.xsd">
+	<proxy-timeout inboundMillis="0" outboundMillis="0"/>
+	<sso-cookie domain="{{wam-host}}" />
+	<sso-traffic>
+		<by-site host="{{wam-host}}" port="{{wam-proxy-port}}">
+			<cctx-mapping cctx="${contextRoot}/*" thost="{{app-host}}" tport="{{app-port}}" tpath="${contextRoot}/*" />
+			<allow cpath="${contextRoot}/*" action="GET,POST" />
+			<allow cpath="${contextRoot}/*?*" action="GET,POST" />
+		</by-site>
+	</sso-traffic>
+	<users>
+		<user name="member1" pwd="password1">
+			<sso-header name="policy-ldsaccountid" value="12345"/>
+			<sso-header name="policy-dn" value="fake-dn"/>
+			<sso-header name="policy-gender" value="M"/>
+			<sso-header name="policy-givenname" value="member"/>
+			<sso-header name="policy-ldsbdate" value="2005-12-25"/>
+			<sso-header name="policy-ldsemailaddress" value="member1@ldschurch.org"/>
+			<sso-header name="policy-ldsindividualid" value="999999999"/>
+			<sso-header name="policy-ldsmrn" value="111111111"/>
+			<!-- This person is a Bishop AND a Stake President -->
+			<sso-header name="policy-ldspositions" value="p4/7u118989/5u923492/1u234098/:p1/5u923492/1u234098/"/>
+			<sso-header name="policy-ldsunits" value="/7u118989/5u923492/1u234098/"/>
+			<sso-header name="policy-preferredname" value="member password"/>
+			<sso-header name="policy-sn" value="password"/>
+		</user>
+	</users>
+</config>
